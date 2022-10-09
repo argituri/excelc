@@ -20,7 +20,7 @@ filename = re.sub('\s', '_', str(datetime.datetime.now()) + '.csv')
 lines = open('lines.txt', 'r').read().splitlines()
 xlsxmatch_re = re.compile('.*\.xlsx$')
 
-#excel_file_paths = []
+excel_file_paths = []
 
 # Add found excel file paths to variable
 for line in lines:
@@ -28,7 +28,8 @@ for line in lines:
     # check files in folder, add excel file paths to variable
     try:
         files = os.listdir(line)
-        excel_file_paths = [line + '/' + x for x in files if xlsxmatch_re.match(x)]
+        for x in (line + '/' + x for x in files if xlsxmatch_re.match(x)):
+            excel_file_paths.append(x)
     except FileNotFoundError as e:
         logging.error("File not found ... %s", e)
 
