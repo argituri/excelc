@@ -40,7 +40,7 @@ if len(excel_file_paths) < 1:
 for excel_file_path in excel_file_paths:
     logging.debug("opening/writing rows from: %s", excel_file_path)
     db = xl.readxl(fn=excel_file_path)
-    with open(filename, 'w+') as f:
+    with open(filename, 'a') as f:
         writer = csv.writer(f, delimiter=';')
         writer.writerows(db.ws(ws=db.ws_names[0]).rows)
         # for row in db.ws(ws='Sheet1').rows:
