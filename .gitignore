@@ -1,2 +1,4 @@
 lines.txt
 venv
+*.csv
+.DS_Store

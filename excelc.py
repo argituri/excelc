@@ -16,8 +16,7 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 # Read lines from file
 
-filename = re.sub('\s', '_', str(datetime.datetime.now()))
-#lines = open('lines.txt', 'r').readlines()
+filename = re.sub('\s', '_', str(datetime.datetime.now()) + '.csv')
 lines = open('lines.txt', 'r').read().splitlines()
 xlsxmatch_re = re.compile('.*\.xlsx$')
 
@@ -29,25 +28,22 @@ for line in lines:
     # check files in folder, add excel file paths to variable
     try:
         files = os.listdir(line)
-        excel_file_paths = [x for x in files if xlsxmatch_re.match(x)]
-    #    for file in files:
-    #        if re.match('.*\.xlsx$', file):
-    #            excel_file_paths.append(str(file))
+        excel_file_paths = [line + '/' + x for x in files if xlsxmatch_re.match(x)]
     except FileNotFoundError as e:
-        logging.debug("File not found ... %s", e)
+        logging.error("File not found ... %s", e)
 
 if len(excel_file_paths) < 1:
     logging.debug('No excel file paths found!')
     exit()
 
-try:
-    for excel_file_path in excel_file_paths:
-        logging.debug("opening/writing rows from: %s", excel_file_path)
-        db = xl.readxl(fn=excel_file_path)
-        with open('%s.csv', filename) as f:
-            writer = csv.writer(f, delimiter=';')
-            writer.writerows(db.ws(ws='Sheet1').rows)
-            # for row in db.ws(ws='Sheet1').rows:
-            #    for element in row:
-except Exception as e:
-    logging.error(e)
+#try:
+for excel_file_path in excel_file_paths:
+    logging.debug("opening/writing rows from: %s", excel_file_path)
+    db = xl.readxl(fn=excel_file_path)
+    with open(filename, 'w+') as f:
+        writer = csv.writer(f, delimiter=';')
+        writer.writerows(db.ws(ws=db.ws_names[0]).rows)
+        # for row in db.ws(ws='Sheet1').rows:
+        #    for element in row:
+#except Exception as e:
+#    logging.error(e)
